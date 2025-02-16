@@ -13,6 +13,8 @@ const ProductDetail = () => {
     const { addToCart: addToCartContext } = useCart();
     const productDetailState = useSelector((state) => state.product.productDetail);
     const { product, loading, error } = productDetailState;
+    const [Loading, setLoading] = useState(false);
+    const [Error, setError] = useState(null);
 
     useEffect(() => {
         dispatch(fetchProductDetailAction(id));
@@ -24,11 +26,17 @@ const ProductDetail = () => {
             return;
         }
 
+        setLoading(true);
+        setError(null);
+
         try {
             const token = user.token;
             await addToCartContext({ productId: id, quantity: 1 }, token);
         } catch (error) {
             console.error('Error adding to cart:', error);
+            setError('Error adding to cart. Please try again.');
+        } finally{
+            setLoading(false);
         }
     };
 
@@ -47,11 +55,12 @@ const ProductDetail = () => {
                         <p className="text-lg font-bold">
                             {product.price !== undefined ? `$${product.price.toFixed(2)}` : 'Price not available'}
                         </p>
+                        {Error && <p className="text-red-500 mt-2">{Error}</p>}
                         <button
                             onClick={handleAddToCart}
                             className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
                         >
-                            Add to Cart
+                            {Loading ? 'Adding to Cart...' : 'Add to Cart'}
                         </button>
                     </div>
                 )

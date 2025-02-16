@@ -10,9 +10,13 @@ const CheckoutPage = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { cart, checkout } = useCart();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
         if(!user){
             navigate('/login');
         }
@@ -31,6 +35,9 @@ const CheckoutPage = () => {
             navigate('/success');
         } catch (error) {
             console.error('Error creating checkout:', error);
+            setError('Error creating checkout. Please try again.');
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -70,8 +77,9 @@ const CheckoutPage = () => {
                         <option value="PayPal">PayPal</option>
                     </select>
                 </div>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
                 <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                    Place Order
+                    {loading ? 'Processing...' : 'Place Order'}
                 </button>
             </form>
         </div>

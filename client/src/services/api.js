@@ -59,6 +59,13 @@ export const addToCart = (data, token) =>
                 Authorization: `Bearer ${token}`,
             },
         });
+
+    export const fetchOrders = (token) =>
+        api.get('/orders', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         
 
 export default api;

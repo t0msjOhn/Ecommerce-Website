@@ -11,19 +11,33 @@ const UserProfilePage = () => {
         return null;
     }
 
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    const handleViewOrders = () => {
+        navigate('/orders');
+    };
+
     return (
         <div className="max-w-md mx-auto mt-8">
             <h2 className="text-2xl font-bold mb-4">Profile</h2>
             <p>Email: {user.email}</p>
-            <button 
-                onClick={() => {
-                    logout();
-                    navigate('/');
-                }} 
-                className="bg-red-600 text-white py-2 px-4 rounded mt-4"
-            >
-                Logout
-            </button>
+            <div className="mt-4">
+                <button
+                    onClick={handleViewOrders}
+                    className="bg-blue-600 text-white py-2 px-4 rounded mr-2"
+                >
+                    View Orders
+                </button>
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-600 text-white py-2 px-4 rounded"
+                >
+                    Logout
+                </button>
+            </div>
         </div>
     );
 };

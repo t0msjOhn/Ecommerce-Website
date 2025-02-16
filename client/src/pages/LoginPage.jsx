@@ -8,9 +8,13 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
 
         try {
             const response = await loginUser({ email, password });
@@ -18,6 +22,9 @@ const LoginPage = () => {
             navigate('/profile');
         } catch (error) {
             console.error('Error logging in:', error);
+            setError('Invalid email or password.');
+        } finally{
+            setLoading(false);
         }
     };
 
@@ -45,8 +52,9 @@ const LoginPage = () => {
                         required
                     />
                 </div>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
                 <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                    Login
+                    {loading ? 'Logging in...' : 'Login'}
                 </button>
             </form> 
             <div className="mt-4">

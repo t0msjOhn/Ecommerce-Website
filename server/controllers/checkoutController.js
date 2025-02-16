@@ -1,4 +1,4 @@
-const Checkout = require('../models/Checkout');
+const Order = require('../models/Order'); // Import the Order model
 const Cart = require('../models/Cart');
 const sendEmail = require('../utils/sendEmail');
 
@@ -10,15 +10,16 @@ const createCheckout = async (req, res) => {
     }
 
     try {
-        const checkout = new Checkout({
+        const order = new Order({
             user: req.user._id,
             phoneNumber,
             address,
             paymentMethod,
             cart,
+            status: 'Pending' // Set initial status to 'Pending'
         });
 
-        await checkout.save();
+        await order.save();
         await Cart.findOneAndUpdate({ user: req.user._id }, { products: [] });
 
         // Send confirmation email
@@ -30,6 +31,7 @@ const createCheckout = async (req, res) => {
             Address: ${address}
             Payment Method: ${paymentMethod}
             Products: ${cart.map(item => `${item.product.name} (Quantity: ${item.quantity})`).join(', ')}
+            Status: ${order.status}
         `;
 
         try {
@@ -42,7 +44,7 @@ const createCheckout = async (req, res) => {
             console.error('Error sending email:', emailError);
         }
 
-        res.status(201).json(checkout);
+        res.status(201).json(order);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }

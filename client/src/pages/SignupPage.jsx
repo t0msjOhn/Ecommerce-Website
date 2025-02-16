@@ -8,9 +8,13 @@ const SignupPage = () => {
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
 
         try {
             const response = await registerUser({ email, password });
@@ -18,6 +22,9 @@ const SignupPage = () => {
             navigate('/profile'); // Redirect to profile page
         } catch (error) {
             console.error('Error registering:', error);
+            setError('Error signing up. Please try again.');
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -45,8 +52,9 @@ const SignupPage = () => {
                         required
                     />
                 </div>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
                 <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                    Signup
+                    {loading ? 'Signing up...' : 'Signup'}
                 </button>
             </form>
         </div>
